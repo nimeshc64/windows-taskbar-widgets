@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>NetworkWidget</AssemblyName>
+    <RootNamespace>NetTools</RootNamespace>
+    <Product>Network Widget</Product>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\BluetoothBatteryWidget\Native.cs" Link="Shared\Native.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\Credit.cs" Link="Shared\Credit.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\TaskbarZone.cs" Link="Shared\TaskbarZone.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\Theme.cs" Link="Shared\Theme.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\IconRenderer.cs" Link="Shared\IconRenderer.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\Models.cs" Link="Shared\Models.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\HoverCard.cs" Link="Shared\HoverCard.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\TaskbarStrip.cs" Link="Shared\TaskbarStrip.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\FlyoutBase.cs" Link="Shared\FlyoutBase.cs" />
+    <Compile Include="..\BluetoothBatteryWidget\AppFiles.cs" Link="Shared\AppFiles.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build all widgets
+        shell: pwsh
+        run: |
+          Get-ChildItem src -Recurse -Filter *.csproj | ForEach-Object {
+            dotnet build $_.FullName -c Release -nologo
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }

@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Nimesh Jayaweera</Authors>
+    <Company>Nimesh Jayaweera</Company>
+    <Copyright>Copyright © 2026 Nimesh Jayaweera</Copyright>
+    <PackageProjectUrl>https://nimeshjayaweera.com/</PackageProjectUrl>
+  </PropertyGroup>
+</Project>

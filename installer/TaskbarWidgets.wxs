@@ -1,0 +1,69 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Taskbar Widgets"
+           Manufacturer="Nimesh Jayaweera"
+           Version="$(var.Version)"
+           UpgradeCode="d341c12c-bfd2-4ad1-981a-8cab2f98076d"
+           Scope="perUser"
+           Compressed="yes">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="AppIcon" SourceFile="$(var.Root)\installer\app.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://nimeshjayaweera.com/" />
+    <Property Id="ARPHELPLINK" Value="https://nimeshjayaweera.com/" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsDir" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="Taskbar Widgets" />
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="MenuDir" Name="Taskbar Widgets" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(var.AppDir)\**" />
+    </ComponentGroup>
+
+    <Component Id="Shortcuts" Directory="MenuDir" Guid="6a0f6c62-7a51-4d0e-9a6c-3a1f2b9d4e11">
+      <Shortcut Id="ScBluetooth" Name="Bluetooth Battery Widget" Target="[INSTALLFOLDER]BluetoothBatteryWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScAudio" Name="Audio Control Widget" Target="[INSTALLFOLDER]AudioControlWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScSysMon" Name="System Monitor Widget" Target="[INSTALLFOLDER]SystemMonitorWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScNowPlaying" Name="Now Playing Widget" Target="[INSTALLFOLDER]NowPlayingWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScDevTools" Name="Developer Tools Widget" Target="[INSTALLFOLDER]DevToolsWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScNetwork" Name="Network Widget" Target="[INSTALLFOLDER]NetworkWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScSysTools" Name="System Tools Widget" Target="[INSTALLFOLDER]SystemToolsWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <Shortcut Id="ScNotify" Name="Notifications Widget" Target="[INSTALLFOLDER]NotificationsWidget.exe" WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveMenuDir" On="uninstall" />
+      <RemoveFolder Id="RemoveInstallDir" Directory="INSTALLFOLDER" On="uninstall" />
+      <RemoveFolder Id="RemoveProgramsDir" Directory="ProgramsDir" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\Nimesh Jayaweera\Taskbar Widgets" Name="Installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="Main" Title="Taskbar Widgets">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="Shortcuts" />
+    </Feature>
+
+    <SetProperty Id="WixQuietExec64CmdLine" Sequence="execute" Before="StopWidgets"
+                 Value="&quot;[System64Folder]taskkill.exe&quot; /f /im BluetoothBatteryWidget.exe /im AudioControlWidget.exe /im SystemMonitorWidget.exe /im NowPlayingWidget.exe /im DevToolsWidget.exe /im NetworkWidget.exe /im SystemToolsWidget.exe /im NotificationsWidget.exe" />
+    <CustomAction Id="StopWidgets" BinaryRef="Wix4UtilCA_X64" DllEntry="WixQuietExec64" Execute="immediate" Return="ignore" />
+
+    <SetProperty Id="CleanStartup" Sequence="execute" Before="CleanStartup"
+                 Value="&quot;[System64Folder]cmd.exe&quot; /c for %a in (BluetoothBatteryWidget AudioControlWidget SystemMonitorWidget NowPlayingWidget DevToolsWidget NetworkWidget SystemToolsWidget NotificationsWidget) do reg delete &quot;HKCU\Software\Microsoft\Windows\CurrentVersion\Run&quot; /v %a /f" />
+    <CustomAction Id="CleanStartup" BinaryRef="Wix4UtilCA_X64" DllEntry="WixQuietExec64" Execute="deferred" Impersonate="yes" Return="ignore" />
+
+    <CustomAction Id="StartWidgets" Directory="INSTALLFOLDER" Execute="immediate" Return="asyncNoWait"
+                  ExeCommand="&quot;[System64Folder]cmd.exe&quot; /c start &quot;&quot; &quot;[INSTALLFOLDER]BluetoothBatteryWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]AudioControlWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]SystemMonitorWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]NowPlayingWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]DevToolsWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]NetworkWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]SystemToolsWidget.exe&quot; &amp; start &quot;&quot; &quot;[INSTALLFOLDER]NotificationsWidget.exe&quot;" />
+
+    <InstallExecuteSequence>
+      <Custom Action="StopWidgets" Before="InstallValidate" />
+      <Custom Action="CleanStartup" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE" />
+      <Custom Action="StartWidgets" After="InstallFinalize" Condition="NOT REMOVE" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>

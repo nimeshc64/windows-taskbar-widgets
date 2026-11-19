@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g. 1.2.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $v = if ('${{ github.event_name }}' -eq 'push') { '${{ github.ref_name }}'.TrimStart('v') } else { '${{ inputs.version }}'.TrimStart('v') }
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "Version '$v' must look like 1.2.3" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Build executables and installer
+        shell: pwsh
+        run: ./build.ps1 -Version ${{ steps.version.outputs.version }}
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Taskbar Widgets v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          body: |
+            ## Download
+
+            | File | What it is |
+            |---|---|
+            | `TaskbarWidgets-${{ steps.version.outputs.version }}-x64.msi` | **Recommended.** Installs all widgets, adds them to the Start menu and starts them. No admin rights needed. |
+            | `<Widget>-${{ steps.version.outputs.version }}-win-x64.exe` | A single widget as one portable file. Just run it. |
+            | `TaskbarWidgets-${{ steps.version.outputs.version }}-win-x64-portable.zip` | All widgets, portable. Unzip anywhere and run the ones you want. |
+
+            Windows 10 (2004+) or Windows 11, 64-bit. No .NET install needed.
+
+            The files are not code-signed yet, so Windows SmartScreen may warn you. Click **More info → Run anyway**.
+          files: dist/*

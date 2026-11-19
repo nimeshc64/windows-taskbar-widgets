@@ -1,0 +1,11 @@
+bin/
+obj/
+artifacts/
+dist/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.log
+*.wixpdb
