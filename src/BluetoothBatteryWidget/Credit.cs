@@ -6,7 +6,7 @@ static class Credit
 {
     public const string Author = "Nimesh Jayaweera";
     public const string Url = "https://nimeshjayaweera.com/";
-    public const string RepoUrl = "https://github.com/nimeshjayaweera/windows-taskbar-widgets";
+    public const string RepoUrl = "https://github.com/nimeshc64/windows-taskbar-widgets";
     public const int Height = 28;
 
     public static void Open(string url = Url)

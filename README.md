@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/OWNER/windows-taskbar-widgets?label=download&style=for-the-badge"></a>
-  <a href="../../actions/workflows/release.yml"><img alt="Release build" src="https://img.shields.io/github/actions/workflow/status/OWNER/windows-taskbar-widgets/release.yml?style=for-the-badge&label=release"></a>
+  <a href="../../releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/nimeshc64/windows-taskbar-widgets?label=download&style=for-the-badge"></a>
+  <a href="../../actions/workflows/release.yml"><img alt="Release build" src="https://img.shields.io/github/actions/workflow/status/nimeshc64/windows-taskbar-widgets/release.yml?style=for-the-badge&label=release"></a>
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0078D4?style=for-the-badge&logo=windows">
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge"></a>
 </p>
@@ -184,7 +184,7 @@ All the taskbar widgets share the same behaviour:
 You need the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) on Windows.
 
 ```powershell
-git clone https://github.com/OWNER/windows-taskbar-widgets.git
+git clone https://github.com/nimeshc64/windows-taskbar-widgets.git
 cd windows-taskbar-widgets
 
 # run one widget
