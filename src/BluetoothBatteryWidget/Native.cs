@@ -156,8 +156,34 @@ static class Native
         var sb = new System.Text.StringBuilder(64);
         GetClassName(fg, sb, sb.Capacity);
         var cls = sb.ToString();
-        if (cls is "Progman" or "WorkerW" or "Shell_TrayWnd" or "Shell_SecondaryTrayWnd") return false;
+        if (cls is "Progman" or "WorkerW" or "Shell_TrayWnd" or "Shell_SecondaryTrayWnd" or "Windows.UI.Core.CoreWindow"
+            or "XamlExplorerHostIslandWindow" or "ControlCenterWindow" or "TopLevelWindowForOverflowXamlIsland"
+            or "NotifyIconOverflowWindow" or "MultitaskingViewFrame" or "ForegroundStaging" or "XamlExplorerHostIslandWindow_WASDK")
+            return false;
         var mon = Screen.PrimaryScreen!.Bounds;
-        return r.L <= mon.Left && r.T <= mon.Top && r.R >= mon.Right && r.B >= mon.Bottom;
+        if (!(r.L <= mon.Left && r.T <= mon.Top && r.R >= mon.Right && r.B >= mon.Bottom)) return false;
+        return !IsShellProcess(fg);
+    }
+
+    [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint pid);
+
+    static readonly HashSet<string> ShellProcesses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "explorer", "ShellExperienceHost", "ShellHost", "StartMenuExperienceHost", "SearchHost", "SearchApp",
+        "TextInputHost", "LockApp", "Widgets", "WidgetBoard", "PeopleExperienceHost", "CredentialUIBroker", "consent"
+    };
+    static uint _lastPid;
+    static bool _lastShell;
+
+    static bool IsShellProcess(IntPtr hwnd)
+    {
+        GetWindowThreadProcessId(hwnd, out uint pid);
+        if (pid == _lastPid) return _lastShell;
+        bool shell;
+        try { using var p = System.Diagnostics.Process.GetProcessById((int)pid); shell = ShellProcesses.Contains(p.ProcessName); }
+        catch { shell = true; }
+        _lastPid = pid;
+        _lastShell = shell;
+        return shell;
     }
 }
