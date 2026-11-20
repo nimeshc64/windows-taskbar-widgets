@@ -175,6 +175,18 @@ static class Native
     static uint _lastPid;
     static bool _lastShell;
 
+    public static bool ShellHasFocus()
+    {
+        var fg = GetForegroundWindow();
+        if (fg == IntPtr.Zero) return true;
+        var sb = new System.Text.StringBuilder(64);
+        GetClassName(fg, sb, sb.Capacity);
+        if (sb.ToString() is "Shell_TrayWnd" or "Shell_SecondaryTrayWnd" or "NotifyIconOverflowWindow"
+            or "TopLevelWindowForOverflowXamlIsland" or "Windows.UI.Core.CoreWindow" or "ControlCenterWindow"
+            or "XamlExplorerHostIslandWindow") return true;
+        return IsShellProcess(fg) && sb.ToString() is not ("Progman" or "WorkerW" or "CabinetWClass");
+    }
+
     static bool IsShellProcess(IntPtr hwnd)
     {
         GetWindowThreadProcessId(hwnd, out uint pid);
